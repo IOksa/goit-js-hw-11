@@ -1,1 +1,64 @@
 @import '~node_modules/modern-normalize/modern-normalize.css';
+
+.search-thumb{
+    min-height: 50px;
+    padding: 10px 0 10px 0;
+
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+
+    background-color: #0603ab;
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+    0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);  
+
+}
+.search-form{
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+
+.search-button {
+    float: left;
+    width: 50px;
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none; /* Prevent double borders */
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    cursor: pointer;
+  }
+  
+.search-button:hover {
+   background: #0b7dda;
+}
+  
+  /* Clear floats */
+  .search-form::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+.fa{
+    display: inline-block;
+    transform: translate(0,0);
+
+}
+
+.fa-search::before{
+    content:'\e802';
+}
+
+.search-input{
+    border: 1px solid grey;
+    border-right: none;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
