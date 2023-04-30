@@ -16,16 +16,22 @@ const refs={
     form: document.querySelector('#search-form'),
     input: document.querySelector('.search-input'),
     div: document.querySelector(".gallery"),
-    LoadMoreBtn: document.querySelector('.load-more'),
+    guard: document.querySelector('.js-guard'),
+
     
 }
 
 let gallery = new SimpleLightbox('.gallery a');
 
-refs.LoadMoreBtn.hidden=true;
+const options = {
+  root: null,
+  rootMargin: "300px",
+  threshold: 0,
+};
+const observer = new IntersectionObserver(onScrollPagination, options);
 
 refs.form.addEventListener('submit', onFormSubmit);
-refs.LoadMoreBtn.addEventListener('click', onClickLoadMore)
+
 
 // плавне прокручування сторінки після запиту і відтворення кожної наступної групи зображень
 const { height: cardHeight } = document
@@ -40,17 +46,23 @@ window.scrollBy({
 
 function onFormSubmit(event){
     event.preventDefault();
-    refs.LoadMoreBtn.hidden=true;
 
     countPage=1;
     refs.div.innerHTML="";
 
     const form = event.currentTarget;
-    searchQuery = form.elements.searchQuery.value;
-
-    fetchQuery()
-    .then(checkQueryResponse)
-    .catch(err=>Notify.failure('Ooops! Something went wrong!'));
+    searchQuery = form.elements.searchQuery.value.trim();
+    if(searchQuery!==""){
+      fetchQuery()
+      .then(handlerQueryResponse)
+      .catch(err=>{
+        Notify.failure('Ooops! Something went wrong!');
+        console.error(err);
+      });
+    }
+    else{
+      Notify.failure('Empty search input');
+    }
     
 }
 
@@ -72,32 +84,34 @@ async function fetchQuery(){
     
 }
 
-function checkQueryResponse(queryResponse){
-    console.log("queryResponse", queryResponse);
-    console.log("queryResponse.hits=",queryResponse.data.hits);
-
-    if (queryResponse.data.hits.length===0){
+function handlerQueryResponse(queryResponse){
+     if (queryResponse.data.hits.length===0){
         Notify.failure('Sorry, there are no images matching your search query. Please try again.');
     }
     else{
-        const markup=createImageGalleryMarkup(queryResponse.data.hits);
-        refs.div.insertAdjacentHTML('beforeend', markup);
-        gallery.refresh();
-        console.log("queryResponse.data.totalHits", queryResponse.data.totalHits, "  ", queryResponse.data.totalHits/queryLimit)
-        console.log("countPage=", countPage);
+        renderMarkup(queryResponse);
+         
         if(countPage>1){
             const countImage=countPage*queryLimit;
             Notify.info(`Hooray! We found ${countImage} images.`);
         }
 
+        console.log(countPage,"   ", queryResponse.data.totalHits/queryLimit);
         if(countPage<queryResponse.data.totalHits/queryLimit){
-            refs.LoadMoreBtn.hidden = false;
+            observer.observe(refs.guard);
+
         }else{
-            refs.LoadMoreBtn.hidden = true;
+            observer.unobserve(guard);
             Notify.info("We're sorry, but you've reached the end of search results.");
         }
        
     }
+}
+
+function renderMarkup(queryResponse){
+    const markup=createImageGalleryMarkup(queryResponse.data.hits);
+    refs.div.insertAdjacentHTML('beforeend', markup);
+    gallery.refresh();
 }
 
 function createImageGalleryMarkup(arr){
@@ -133,10 +147,18 @@ function createImageGalleryMarkup(arr){
     
 }
 
-function onClickLoadMore(){
-    countPage+=1;
-    fetchQuery()
-    .then(checkQueryResponse)
-    .catch(err=>Notify.failure('Ooops! Something went wrong!'));
+function onScrollPagination(entries, observer){
+  entries.forEach((entry) => {
+    
+    if (entry.isIntersecting) {
+      countPage += 1;
 
+      fetchQuery()
+     .then(handlerQueryResponse)
+     .catch(err=>{
+      Notify.failure('Ooops! Something went wrong!');
+      console.error(err);
+     });
+    }
+  });
 }
