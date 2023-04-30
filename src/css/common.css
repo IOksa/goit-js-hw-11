@@ -37,6 +37,7 @@ ul{
     0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);  
 
     margin-bottom: 20px;
+    z-index: 100;
 
 }
 .search-form{
@@ -44,6 +45,7 @@ ul{
     justify-content: center;
     padding: 0;
     margin: 0;
+ 
 }
 
 
@@ -59,6 +61,7 @@ ul{
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
     cursor: pointer;
+    z-index: 100;
   }
   
 .search-button:hover,
@@ -88,6 +91,7 @@ ul{
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
     width: 300px;
+    z-index: 100;
 }
 
 .gallery {
