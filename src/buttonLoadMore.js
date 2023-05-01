@@ -28,17 +28,6 @@ refs.loadMoreBtn.hidden=true;
 refs.form.addEventListener('submit', onFormSubmit);
 refs.loadMoreBtn.addEventListener('click', onClickLoadMore)
 
-// плавне прокручування сторінки після запиту і відтворення кожної наступної групи зображень
-const { height: cardHeight } = document
-  .querySelector(".gallery")
-  .firstElementChild.getBoundingClientRect();
-
-window.scrollBy({
-  top: cardHeight * 2,
-  behavior: "smooth",
-});
-/////////////////////////////////////////////////////////////////////////////////////////
-
 function onFormSubmit(event){
     event.preventDefault();
     refs.loadMoreBtn.hidden=true;
@@ -79,9 +68,7 @@ async function fetchQuery(){
 }
 
 function checkQueryResponse(queryResponse){
-    console.log("queryResponse", queryResponse);
-    console.log("queryResponse.hits=",queryResponse.data.hits);
-
+    
     if (queryResponse.data.hits.length===0){
         Notify.failure('Sorry, there are no images matching your search query. Please try again.');
     }
@@ -89,9 +76,18 @@ function checkQueryResponse(queryResponse){
         const markup=createImageGalleryMarkup(queryResponse.data.hits);
         refs.div.insertAdjacentHTML('beforeend', markup);
         gallery.refresh();
-        console.log("queryResponse.data.totalHits", queryResponse.data.totalHits, "  ", queryResponse.data.totalHits/queryLimit)
-        console.log("countPage=", countPage);
+        
         if(countPage>1){
+// плавне прокручування сторінки після запиту і відтворення кожної наступної групи зображень
+          const { height: cardHeight } = document
+          .querySelector(".gallery")
+          .firstElementChild.getBoundingClientRect();
+
+          window.scrollBy({
+          top: cardHeight * 2-70,
+          behavior: "smooth",
+          });
+//////////////////////////////////////////////////////////////////////////////
             const countImage=countPage*queryLimit;
             Notify.info(`Hooray! We found ${countImage} images.`);
         }
@@ -102,14 +98,11 @@ function checkQueryResponse(queryResponse){
             refs.loadMoreBtn.hidden = true;
             Notify.info("We're sorry, but you've reached the end of search results.");
         }
-       
     }
 }
 
 function createImageGalleryMarkup(arr){
-    console.log("arr=", arr);
-
-    return arr.map(({largeImageURL, webformatURL, tags, views, likes, comments, downloads})=>
+     return arr.map(({largeImageURL, webformatURL, tags, views, likes, comments, downloads})=>
         `<div class="photo-card">
        
         <div class="img-thumb">
@@ -136,7 +129,6 @@ function createImageGalleryMarkup(arr){
           </p>
         </div>
       </div>`).join('');
-    
 }
 
 function onClickLoadMore(){

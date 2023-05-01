@@ -16,9 +16,7 @@ const refs={
     form: document.querySelector('#search-form'),
     input: document.querySelector('.search-input'),
     div: document.querySelector(".gallery"),
-    guard: document.querySelector('.js-guard'),
-
-    
+    guard: document.querySelector('.js-guard'),   
 }
 
 let gallery = new SimpleLightbox('.gallery a');
@@ -32,17 +30,6 @@ const observer = new IntersectionObserver(onScrollPagination, options);
 
 refs.form.addEventListener('submit', onFormSubmit);
 
-
-// плавне прокручування сторінки після запиту і відтворення кожної наступної групи зображень
-const { height: cardHeight } = document
-  .querySelector(".gallery")
-  .firstElementChild.getBoundingClientRect();
-
-window.scrollBy({
-  top: cardHeight * 2,
-  behavior: "smooth",
-});
-///////////////////////////////////////////////////////////////////////////////////////////
 
 function onFormSubmit(event){
     event.preventDefault();
@@ -101,7 +88,7 @@ function handlerQueryResponse(queryResponse){
             observer.observe(refs.guard);
 
         }else{
-            observer.unobserve(guard);
+            observer.unobserve(refs.guard);
             Notify.info("We're sorry, but you've reached the end of search results.");
         }
        
@@ -148,6 +135,7 @@ function createImageGalleryMarkup(arr){
 }
 
 function onScrollPagination(entries, observer){
+  console.log('I am onScrollPagination');
   entries.forEach((entry) => {
     
     if (entry.isIntersecting) {
