@@ -90,8 +90,7 @@ function handlerQueryResponse(queryResponse){
         }else{
             observer.unobserve(refs.guard);
             Notify.info("We're sorry, but you've reached the end of search results.");
-        }
-       
+        }   
     }
 }
 
@@ -106,7 +105,6 @@ function createImageGalleryMarkup(arr){
 
     return arr.map(({largeImageURL, webformatURL, tags, views, likes, comments, downloads})=>
         `<div class="photo-card">
-       
         <div class="img-thumb">
         <a href="${largeImageURL}" class="photo-card__link">
         <img class="photo-card__image"" src="${webformatURL}" alt="{tags}" loading="lazy" data-source="large-image.jpg"/>
@@ -131,7 +129,6 @@ function createImageGalleryMarkup(arr){
           </p>
         </div>
       </div>`).join('');
-    
 }
 
 function onScrollPagination(entries, observer){
