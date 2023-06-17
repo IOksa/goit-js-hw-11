@@ -107,7 +107,7 @@ function createImageGalleryMarkup(arr){
         `<div class="photo-card">
         <div class="img-thumb">
         <a href="${largeImageURL}" class="photo-card__link">
-        <img class="photo-card__image"" src="${webformatURL}" alt="{tags}" loading="lazy" data-source="large-image.jpg"/>
+        <img class="photo-card__image" src="${webformatURL}" alt="${tags}" loading="lazy" data-source="large-image.jpg"/>
         </a>
         </div>
         <div class="info">
